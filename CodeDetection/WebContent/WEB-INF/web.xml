@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app>
+	<servlet>
+		<servlet-name>getCpp</servlet-name>
+		<servlet-class>com.shenxinjie.GetCppFile</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>getCpp</servlet-name>
+		<url-pattern>/getCpp</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>showRs</servlet-name>
+		<servlet-class>com.shenxinjie.CompareCpp</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>showRs</servlet-name>
+		<url-pattern>/showRs</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>showCRs</servlet-name>
+		<servlet-class>com.shenxinjie.CompareCppCode</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>showCRs</servlet-name>
+		<url-pattern>/showCRs</url-pattern>
+	</servlet-mapping>
+</web-app>
