@@ -19,7 +19,9 @@ public class Results
 
 	private int[][] matchR;
 
-	private int[][][][] matchResults;
+	private int[][] matchResults;
+	
+	private int[] FileLength;
 
 	private int num;
 
@@ -45,6 +47,15 @@ public class Results
 		recordX = new int[1];
 		recordX[0] = 5;
 	}
+	
+	public Results(String[][] fileContents, String[] results, int num, int[][] matchResults, int[][] matchR, int[] FileLength) {
+		this.fileContents = fileContents;
+		this.matchResults = matchResults;
+		this.results = results;
+		this.num = num;
+		this.matchR = matchR;
+		this.FileLength = FileLength;
+	}
 
 	public Results(String[] orFileNames, String[] fileNames, String[] results, String[][] fileContents, int num, int[] recordX, int[] recordY)
 	{
@@ -60,7 +71,7 @@ public class Results
 	}
 
 	public Results(String[] orFileNames, String[] fileNames, String[] results, String[][] fileContents, int num,
-		int[] recordX, int[] recordY, int[][] matchR, int[][][][] matchResults)
+		int[] recordX, int[] recordY, int[][] matchR, int[][] matchResults)
 	{
 		fileColumnTitle = "文件名";
 		resultColumnTitle = "相似度";
@@ -136,12 +147,12 @@ public class Results
 		return matchR;
 	}
 
-	public void setMatchResults(int[][][][] matchResults)
+	public void setMatchResults(int[][] matchResults)
 	{
 		this.matchResults = matchResults;
 	}
 
-	public int[][][][] getMatchResults()
+	public int[][] getMatchResults()
 	{
 		return matchResults;
 	}
@@ -166,4 +177,7 @@ public class Results
 		return recordY;
 	}
 
+	public int[] getFileLength() {
+		return FileLength;
+	}
 }

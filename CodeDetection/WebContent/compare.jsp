@@ -166,7 +166,7 @@
 							<%
 							}%>
 							<td><%=result[i]%></td>
-							<td><a href="javascript:void(0)" onclick="openWindow(<%=(rs.getRecordX())[i]%>,<%=(rs.getRecordY())[i]%>);">点击查看详情</a></td>
+							<td><a href="javascript:void(0)" onclick="openWindow(<%=(rs.getRecordX())[i]%>,<%=(rs.getRecordY())[i]%>,<%=0%>,<%=0%>);">点击查看详情</a></td>
 						</tr>
 					<%
 							
@@ -211,7 +211,7 @@
 							<td><%=orFile[i]%></td>
 							<td><%=cpFile[i]%></td>
 							<td><%=result[i]%></td>	
-							<td><a href="javascript:void(0)" onclick="openWindow(<%=(rs.getRecordX())[i]%>,<%=(rs.getRecordY())[i]%>);">点击查看详情</a></td>
+							<td> <a href="javascript:void(0)" onclick="openWindow(<%=(rs.getRecordX())[i]%>,<%=(rs.getRecordY())[i]%>,<%=0%>,<%=0%>);">点击查看详情</a></td>
 						</tr>
 					<%
 									}

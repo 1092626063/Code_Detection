@@ -21,6 +21,7 @@ public class TreeNode {//封装树的每一个结点
 	
 	public Vector<TreeNode> Child;
 	public Vector<Integer> hashs;
+	public Vector<Integer> pos;
 	TreeNode (String ss) {
 		Similarity = 0;
 		block_str = "";
@@ -28,6 +29,7 @@ public class TreeNode {//封装树的每一个结点
 		num_attribute = 8;
 		Child = new Vector<TreeNode>();
 		hashs = new Vector<Integer>();
+		pos = new Vector<Integer>();
 	}
 	//拷贝构造函数
 	public TreeNode(TreeNode t) {

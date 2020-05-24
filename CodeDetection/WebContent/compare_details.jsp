@@ -1,6 +1,8 @@
 <%@ page contentType = "text/html; charset = UTF-8"  pageEncoding="utf-8"%>
 <%@ page import="com.shenxinjie.Results"%>
 <%@ page import="java.io.PrintWriter"%>
+<%@ page import="com.shenxinjie.CompareTwoCpp" %>
+<%@ page import="java.util.*" %>
 <!DOCTYPE html>
 <html>
 	<head>
@@ -44,128 +46,226 @@
 		<div class="">
 			
 			<!-- 主页 Start -->
-			
+						<%
+							ArrayList<String> cppFiles = (ArrayList<String> )session.getAttribute("pathlist");
+							Results rs;
+							int max_line = 0;
+							String xx = request.getParameter("x");
+							String yy = request.getParameter("y");
+							String zz = request.getParameter("z");
+							String f = request.getParameter("f");
+							
+							if(cppFiles != null)
+							{
+								int xth = Integer.parseInt(xx);
+								int yth = Integer.parseInt(yy);
+								int zth = Integer.parseInt(zz);
+								int ff = Integer.parseInt(f);
+								System.out.println("cppFiles: "+cppFiles);
+								rs = CompareTwoCpp.getResult(cppFiles, xth, yth);
+								int[][] matchResults = rs.getMatchResults();
+								int[][] matchR = rs.getMatchR();
+								String[][] fileContents = rs.getFileContents();
+								int[] FileLength = rs.getFileLength();
+						%>
 			<div class="main" style="margin-left:0;">
 			
 				<div class="hero">
 						<div class="row">
-							<div class="col-md-12">
+							<div class="col-md-12" style="height:60px">
 								<h2>代码查重详情</h2>
 								<p style="font-family:YouYuan">网页会标示有重复嫌疑的代码.</p>
-								
 							</div>
 						</div>
 				</div>
-				<%int showFlag = (session.getAttribute("showFlag") != null) ? Integer.parseInt(session.getAttribute("showFlag").toString()) : 0; %>
-				<div class="sidebar-search" style="width:100%;">
-					<form method="post" action="showCRs"><!-- enctype="multipart/form-data"-->
+				
+				<div class="sidebar-search" style="width:100%;height:40px;">
+					<form method="post" action="showCRs?i=<%=xth%>&ii=<%=yth%>&j=<%=0%>&f=<%=0%>">
 						<div class="input-group" style="margin:50px auto;">
-							<label for="allcode"><input id="allcode" type="checkbox" name="allCode" value="1" <%if(showFlag==0||showFlag==1||showFlag==2||showFlag==3){System.out.println("compare_details.jsp:showFlag1: "+showFlag);out.print("checked");}%>/>全部结果</label>
-							<label for="space"><input id="space" type="checkbox" name="considerSpace" value="1"<%if(showFlag==0||showFlag==2||showFlag==4||showFlag==6){System.out.println("compare_details.jsp:showFlag2: "+showFlag);out.print("checked");}%>/>区分空格</label>
-							<label for="capital"><input id="capital" type="checkbox" name="considerCapital" value="1" <%if(showFlag==0||showFlag==1||showFlag==4||showFlag==5){System.out.println("compare_details.jsp:showFlag3: "+showFlag);out.print("checked");}%>/>区分大小写</label>
-							<input type="submit" value="确定" />
+							<label><%="The Similarity is "+rs.getResults()[0]%></label>
+							<input type="submit" value="Show All" />
 						</div>
 					</form>
 				</div>
-				<table id="mytable" style="width: 100%;margin: auto;" class="table table-bordered table-striped table-hover">
+				<table id="mytable" style="width: 90%;margin: auto;font-size:12px;" class="table table-bordered table-striped table-hover">
 						<tr>
 							<th style="width: 50%; text-align:center;">原文件</th>
 							<th style="width: 50%; text-align:center;">对比文件</th>
 						</tr>
+						
+						<tr>
+							<td style="text-align:center;"><%=cppFiles.get(xth) %></td>
+							<td style="text-align:center;"><%=cppFiles.get(yth) %></td>
+						</tr>
 						<%
-							Results rs = (Results)session.getAttribute("resultset");
-							String[] cppFiles = ((String)session.getAttribute("cppfiles")).split(";");
-							String xx = request.getParameter("x");
-							String yy = request.getParameter("y");
-							if(xx!=null)
-							{session.setAttribute("x", xx);}
-							if(yy!=null)
-							{session.setAttribute("y", yy);}
-							if(rs != null && cppFiles != null)
-							{
-								int x = Integer.parseInt(xx);
-								int y = Integer.parseInt(yy);
+								if (ff == 0) {
+									if(matchResults != null && fileContents != null)
+									{
+										max_line = Math.max(FileLength[0], FileLength[1]);
+										for (int i = 0; i < max_line; i++) {
 						%>
 						<tr>
-							<td style="text-align:center;"><%=cppFiles[x-1]%></td>
-							<td style="text-align:center;"><%=cppFiles[y-1]%></td>
+						<%
+											if (matchR[0][i] == 1) {
+						%>
+							<td style="color:red">
+								<a style="color:inherit; "href="showCRs?i=<%=xth%>&ii=<%=yth%>&j=<%=i%>&f=<%=1%>"> 
+						<%
+												out.print(fileContents[0][i]);
+						%>
+								</a>
+							</td>
+						<% 
+											}else {
+						%>
+							<td style="color:black">
+								<a style="color:inherit; "href="showCRs?i=<%=xth%>&ii=<%=yth%>&j=<%=i%>&f=<%=1%>">
+						<%
+												out.print(fileContents[0][i]);
+						%>
+								</a>
+							</td>
+						<%
+										}
+						%>	
+						<%
+										if (matchR[1][i] == 1) {
+						%>
+							<td style="color:red">
+								<a style="color:inherit; "href="showCRs?i=<%=xth%>&ii=<%=yth%>&j=<%=i%>&f=<%=1%>"> 
+						<%
+												out.print(fileContents[1][i]);
+						%>
+								</a>
+							</td>
+						<%
+										}else {
+						%>
+							<td style="color:black">
+								<a style="color:inherit; "href="showCRs?i=<%=xth%>&ii=<%=yth%>&j=<%=i%>&f=<%=1%>">
+						<%
+												out.print(fileContents[1][i]);
+						%>
+								</a>
+							</td>
+						<%
+										}
+						%>	
+						</tr>
+						<%				
+									}
+								}
+							}else {
+								if(matchResults != null && fileContents != null)
+								{
+									max_line = Math.max(FileLength[0], FileLength[1]);
+									if (zth < max_line) {
+										for (int i = 0; i < max_line; i++) {
+						%>
+						<tr>
+						<%
+											if (i == zth) {
+						%>
+							<td style="color:red">
+								<a style="color:inherit; "href="showCRs?i=<%=xth%>&ii=<%=yth%>&j=<%=i%>&f=<%=1%>"> 
+						<%
+												out.print(fileContents[0][i]);
+						%>
+								</a>
+							</td>
+						<%
+											}else {
+						%>
+							<td style="color:black">
+								<a style="color:inherit; "href="showCRs?i=<%=xth%>&ii=<%=yth%>&j=<%=i%>&f=<%=1%>"> 
+						<%
+												out.print(fileContents[0][i]);
+						%>
+								</a>
+							</td>
+						<%
+											}
+											if (matchResults[zth][i] == 1) {
+						%>
+							<td style="color:red">
+								<a style="color:inherit; "href="showCRs?i=<%=xth%>&ii=<%=yth%>&j=<%=i+max_line%>&f=<%=1%>">
+						<%
+												out.print(fileContents[1][i]);		
+						%>
+								</a>
+							</td>
+						<%			
+											}else {
+						%>
+							<td style="color:black">
+								<a style="color:inherit; "href="showCRs?i=<%=xth%>&ii=<%=yth%>&j=<%=i+max_line%>&f=<%=1%>"> 
+						<%	
+												out.print(fileContents[1][i]);
+						%> 
+								</a>
+							</td>
+						<%					
+											}
+						%>
 						</tr>
 						<%
-								int[][] matchR = rs.getMatchR();
-								int[][][][] matchResults = rs.getMatchResults();
-								String[][] fileContents = rs.getFileContents();
-								//Integer.parseInt(session.getAttribute("I").toString()) : 1;
-								int ii  = (session.getAttribute("II") != null) ? Integer.parseInt((String)session.getAttribute("II")) : 1;
-								//0默认全部+考虑大小写+考虑空格 1全部+考虑大小写+不考虑空格 2全部+不考虑大小写+不考虑空格
-								//3单行+考虑大小写+考虑空格 4单行+考虑大小写+不考虑空格 5单行+不考虑大小写+不考虑空格
-								//PrintWriter out = response.getWriter();
-								if(matchR != null && matchResults != null && fileContents != null)
-								{
-									int length = fileContents[x].length>fileContents[y].length ? fileContents[x].length:fileContents[y].length;
-									//if(showFlag == 0 || showFlag == 1 || showFlag == 2){
-									for(int i = 1; i <= length; ++i)
-									{
-										if(fileContents[x][i] != null || fileContents[y][i] != null)
-										{System.out.println("matchR[" + x + "]" + "[" + i + "]:" + matchR[x][i] );%>
+										}
+									}else {
+										for (int i = 0; i < max_line; i++) {
+						%>
 						<tr>
-							<td <%if(showFlag == 0 || showFlag == 1 || showFlag == 2){if(matchR[x][i] == 1){out.print("style=\"color:red;\"");}}else if(showFlag == 3 || showFlag == 4 || showFlag == 5){if(i == ii){out.print("style=\"color:red;\"");}}%>><a style="color:inherit; "href="showCRs?i=<%=x%>&ii=<%=i%>"><%
-								if(fileContents[x][i] != null)
-								{
-									if(fileContents[x][i].contains("<"))
-									{
-										fileContents[x][i] = fileContents[x][i].replace("<", "&lt");
-									}
-									if(fileContents[x][i].contains(">"))
-									{
-										fileContents[x][i] = fileContents[x][i].replace(">", "&gt");
-									}
-									out.print(fileContents[x][i]);
-								}else{}%></a></td>
-							<td <%if(showFlag == 0 || showFlag == 1 || showFlag == 2){if(matchR[y][i] == 1){out.print("style=\"color:red;\"");}}else if(showFlag == 3 || showFlag == 4 || showFlag == 5){if(matchResults[x][ii][y][i] == 1){out.print("style=\"color:red;\"");}}%>><%
-								if(fileContents[y][i] != null)
-								{
-									if(fileContents[y][i].contains("<"))
-									{
-										fileContents[y][i] = fileContents[y][i].replace("<", "&lt");
-									}
-									if(fileContents[y][i].contains(">"))
-									{
-										fileContents[y][i] = fileContents[y][i].replace(">", "&gt");
-									}
-									out.print(fileContents[y][i]);
-								}else{}
-								}else{break;}%></td>
+						<%
+											if (matchResults[i][zth-max_line] == 1) {
+						%>
+							<td style="color:red">
+								<a style="color:inherit; "href="showCRs?i=<%=xth%>&ii=<%=yth%>&j=<%=i%>&f=<%=1%>"> 
+						<%
+												out.print(fileContents[0][i]);
+						%>
+								</a>
+							</td>
+						<%
+											}else {
+						%>
+							<td style="color:black">
+								<a style="color:inherit; "href="showCRs?i=<%=xth%>&ii=<%=yth%>&j=<%=i%>&f=<%=1%>"> 
+						<%
+												out.print(fileContents[0][i]);
+						%>
+								</a>
+							</td>
+						<%
+											}
+											if (i == zth-max_line) {
+						%>
+							<td style="color:red">
+								<a style="color:inherit; "href="showCRs?i=<%=xth%>&ii=<%=yth%>&j=<%=i+max_line%>&f=<%=1%>">
+						<%
+												out.print(fileContents[1][i]);		
+						%>
+								</a>
+							</td>
+						<%			
+											}else {
+						%>
+							<td style="color:black">
+								<a style="color:inherit; "href="showCRs?i=<%=xth%>&ii=<%=yth%>&j=<%=i+max_line%>&f=<%=1%>"> 
+						<%	
+												out.print(fileContents[1][i]);
+						%> 
+								</a>
+							</td>
+						<%
+											}
+						%>
 						</tr>
-							<%		}
+						<%				
+										}
+									}
 								}
-								/*else if(showFlag == 3 || showFlag == 4 || showFlag == 5)
-								{
-									//int i = (session.getAttribute("I") != null) ? Integer.parseInt(session.getAttribute("I").toString()) : 1;
-									int ii  = (session.getAttribute("II") != null) ? Integer.parseInt((String)session.getAttribute("II")) : 1;
-								%>
-						
-							<%
-								for(int i = 1; i <= length; ++i)
-								{if(fileContents[x][i]==null && fileContents[y][i]==null){break;}%>
-								<tr>
-								<td <%if(i == ii){out.print("style=\"color:red;\"");}%>><%=fileContents[x][i]%></td>
-								<%//}
-								//for(int j = 1; j <= length; ++j)
-								//{
-								%>
-								<td <%if(matchResults[x][ii][y][i] == 1){out.print("style=\"color:red;\"");}%>><%=fileContents[y][j]%></td>
-								<tr/>
-								<%}//}%>
-						
-								<%}*/else
-								{%>
-						<tr>
-							<td>暂无</td>
-							<td>暂无</td>
-						</tr>
-								<%}
-							}//}
-							rs=null; cppFiles = null;session.setAttribute("showFlag", null);%>
+							}
+						}
+						%>
 				</table>
 				
 					<!-- 底部 -->
@@ -209,7 +309,11 @@
 		<script src="js/html5shiv.js"></script>
 		<!-- Custom JS -->
 		<script src="js/custom.js"></script>
-
 		<script src="js/getpath.js"></script>
+		<script>
+			function ReFlash(obj, len) {
+				alert(obj.id);
+			}
+		</script>
 	</body>	
 </html>
